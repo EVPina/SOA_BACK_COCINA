@@ -48,4 +48,10 @@ public class OrdenProduccionController {
             @RequestBody EstadoRequestDTO estadoRequest) {
         return ResponseEntity.ok(ordenService.actualizarEstado(id, estadoRequest));
     }
+
+    @GetMapping("/por-estado/{estado}")
+    @Operation(summary = "Obtener órdenes por estado")
+    public ResponseEntity<List<OrdenProduccionDTO>> getOrdenesPorEstado(@PathVariable String estado) {
+        return ResponseEntity.ok(ordenService.getOrdenesPorEstado(estado));
+    }
 }
