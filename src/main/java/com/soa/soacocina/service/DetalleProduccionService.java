@@ -28,8 +28,17 @@ public class DetalleProduccionService {
     public DetalleProduccionDTO crearDetalle(DetalleProduccionDTO detalleDTO) {
         log.info("Creando nuevo detalle de producción para orden: {}", detalleDTO.getOrdenId());
         
+         // ✅ Verificar que ordenId no sea null
+        if (detalleDTO.getOrdenId() == null) {
+            log.error("ordenId es null");
+            throw new IllegalArgumentException("ordenId no puede ser null");
+        }
+        
         OrdenProduccion orden = ordenRepository.findById(detalleDTO.getOrdenId())
-                .orElseThrow(() -> new ResourceNotFoundException("Orden no encontrada con ID: " + detalleDTO.getOrdenId()));
+                .orElseThrow(() -> {
+                    log.error("Orden no encontrada con ID: {}", detalleDTO.getOrdenId());
+                    return new ResourceNotFoundException("Orden no encontrada con ID: " + detalleDTO.getOrdenId());
+                });
         
         DetalleProduccion detalle = new DetalleProduccion();
         detalle.setOrden(orden);

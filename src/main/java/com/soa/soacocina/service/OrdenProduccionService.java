@@ -24,9 +24,9 @@ public class OrdenProduccionService {
     private final OrdenProduccionRepository ordenRepository;
     private final DetalleProduccionRepository detalleRepository;
     
-    @Transactional
+   @Transactional
     public OrdenProduccionDTO crearOrden(OrdenProduccionDTO ordenDTO) {
-        log.info("Creando nueva orden de producción para pedido: {}", ordenDTO.getPedidoId());
+        log.info("Creando orden de producción para pedido: {}", ordenDTO.getPedidoId());
         
         OrdenProduccion orden = new OrdenProduccion();
         orden.setPedidoId(ordenDTO.getPedidoId());
@@ -34,10 +34,8 @@ public class OrdenProduccionService {
         orden.setUsuarioJefeId(ordenDTO.getUsuarioJefeId());
         orden.setEstado(EstadoProduccion.PENDIENTE);
         
-        OrdenProduccion savedOrden = ordenRepository.save(orden);
-        log.info("Orden creada exitosamente con ID: {}", savedOrden.getId());
-        
-        return convertToDTO(savedOrden);
+        OrdenProduccion saved = ordenRepository.save(orden);
+        return convertToDTO(saved);
     }
     
     @Transactional
