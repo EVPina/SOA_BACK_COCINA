@@ -14,10 +14,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @AllArgsConstructor
 public class EstadoDetalleRequestDTO {
     
-    @JsonProperty("ordenId")
-    @NotNull(message = "El ID de la orden es requerido")
-    private UUID ordenId;
-    
     @JsonProperty("nuevoEstado")
     @NotNull(message = "El nuevo estado es requerido")
     private String nuevoEstado;
