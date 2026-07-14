@@ -41,6 +41,11 @@ public class DetalleProduccionController {
     
     @PatchMapping("/{detalleId}/estado")
     @Operation(summary = "Actualizar estado de un detalle")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Estado actualizado exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "404", description = "Detalle no encontrado")
+    })
     public ResponseEntity<DetalleProduccionDTO> actualizarEstadoDetalle(
             @PathVariable UUID detalleId,
             @Valid @RequestBody EstadoDetalleRequestDTO estadoRequest) {
@@ -54,6 +59,11 @@ public class DetalleProduccionController {
     
     @GetMapping("/orden/{ordenId}")
     @Operation(summary = "Obtener todos los detalles de una orden específica")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Detalles obtenidos exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos"),
+        @ApiResponse(responseCode = "404", description = "Orden no encontrada")
+    })
     public ResponseEntity<List<DetalleProduccionDTO>> getDetallesByOrdenId(@PathVariable UUID ordenId) {
         List<DetalleProduccionDTO> detalles = detalleService.getDetallesByOrdenId(ordenId);
         return ResponseEntity.ok(detalles);
@@ -61,6 +71,10 @@ public class DetalleProduccionController {
     
     @GetMapping("/{detalleId}")
     @Operation(summary = "Obtener detalle por ID")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Detalle obtenido exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Detalle no encontrado")
+    })
     public ResponseEntity<DetalleProduccionDTO> getDetalleById(@PathVariable UUID detalleId) {
         DetalleProduccionDTO detalle = detalleService.getDetalleById(detalleId);
         return ResponseEntity.ok(detalle);
@@ -68,6 +82,10 @@ public class DetalleProduccionController {
     
     @GetMapping("/por-estado/{estado}")
     @Operation(summary = "Obtener detalles por estado")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Detalles obtenidos exitosamente"),
+        @ApiResponse(responseCode = "400", description = "Datos inválidos")
+    })
     public ResponseEntity<List<DetalleProduccionDTO>> getDetallesByEstado(
             @Parameter(description = "Estado: PENDIENTE, PREPARANDO, LISTO")
             @PathVariable String estado) {
@@ -77,6 +95,10 @@ public class DetalleProduccionController {
     
     @PutMapping("/{detalleId}")
     @Operation(summary = "Actualizar detalle completo")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Detalle actualizado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Detalle no encontrado")
+    })
     public ResponseEntity<DetalleProduccionDTO> actualizarDetalle(
             @PathVariable UUID detalleId,
             @Valid @RequestBody DetalleProduccionDTO detalleDTO) {
@@ -97,6 +119,9 @@ public class DetalleProduccionController {
     
     @GetMapping("/estadisticas")
     @Operation(summary = "Obtener estadísticas de detalles")
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Estadísticas obtenidas exitosamente")
+    })
     public ResponseEntity<EstadisticasDetalles> getEstadisticas() {
         EstadisticasDetalles estadisticas = detalleService.getEstadisticas();
         return ResponseEntity.ok(estadisticas);
