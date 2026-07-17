@@ -20,7 +20,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/ordenes-produccion")
 @RequiredArgsConstructor
 @Tag(name = "Órdenes de Producción", description = "API para gestionar órdenes de producción")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "${app.frontend-url:http://localhost:4200}")
 public class OrdenProduccionController {
 
     private final OrdenProduccionService ordenService;
