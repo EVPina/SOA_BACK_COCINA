@@ -22,7 +22,7 @@ import java.util.UUID;
 @RequestMapping("/api/v1/detalles-produccion")
 @RequiredArgsConstructor
 @Tag(name = "Detalles de Producción", description = "API para gestionar los detalles de producción de la cocina")
-@CrossOrigin(origins = "${app.frontend-url:http://localhost:4200}")
+
 public class DetalleProduccionController {
     
     private final DetalleProduccionService detalleService;

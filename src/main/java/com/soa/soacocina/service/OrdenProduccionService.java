@@ -38,11 +38,15 @@ public class OrdenProduccionService {
         return convertToDTO(saved);
     }
     
+    @org.springframework.beans.factory.annotation.Value("${api.ventas.url:http://localhost:8081/api/v1/ventas/pedidos}")
+    private String ventasApiUrl;
+
+    private final org.springframework.web.reactive.function.client.WebClient.Builder webClientBuilder;
+
     @Transactional
     public OrdenProduccionDTO actualizarEstado(UUID ordenId, EstadoRequestDTO estadoRequest) {
         log.info("Actualizando estado de orden {} a {}", ordenId, estadoRequest.getNuevoEstado());
         
-        // CORRECCIÓN: Lambda simplificada
         OrdenProduccion orden = ordenRepository.findById(ordenId)
                 .orElseThrow(() -> new ResourceNotFoundException("Orden no encontrada con ID: " + ordenId));
         
@@ -51,6 +55,24 @@ public class OrdenProduccionService {
         
         OrdenProduccion updatedOrden = ordenRepository.save(orden);
         log.info("Estado de orden {} actualizado exitosamente", ordenId);
+
+        // Notificar a Ventas de forma síncrona/asíncrona
+        if (orden.getPedidoId() != null) {
+            try {
+                log.info("Notificando a Ventas el cambio de estado del pedido {}", orden.getPedidoId());
+                webClientBuilder.build()
+                        .patch()
+                        .uri(ventasApiUrl + "/" + orden.getPedidoId() + "/estado?estado=" + nuevoEstado.name())
+                        .retrieve()
+                        .toBodilessEntity()
+                        .block(); // Bloqueamos para asegurar que se procesó, o se podría hacer subscribe()
+                log.info("Ventas notificado exitosamente");
+            } catch (Exception e) {
+                log.error("Error al notificar a Ventas sobre el cambio de estado: {}", e.getMessage());
+                // No lanzamos excepción para no revertir la transacción de Cocina si Ventas falla, 
+                // o podríamos lanzarla dependiendo de las reglas de negocio. Por ahora solo logeamos.
+            }
+        }
         
         return convertToDTO(updatedOrden);
     }
