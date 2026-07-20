@@ -86,13 +86,21 @@ public class OrdenProduccionService {
     
     @Transactional(readOnly = true)
     public List<OrdenProduccionDTO> getOrdenesActivas() {
-        List<EstadoProduccion> estadosActivos = List.of(
+        List<EstadoProduccion> estadosActivos = new java.util.ArrayList<>(List.of(
             EstadoProduccion.PENDIENTE, 
             EstadoProduccion.PREPARANDO, 
             EstadoProduccion.LISTO
-        );
+        ));
         
-        List<OrdenProduccion> ordenes = ordenRepository.findActiveOrders(estadosActivos);
+        List<OrdenProduccion> ordenes = new java.util.ArrayList<>(ordenRepository.findActiveOrders(estadosActivos));
+        
+        // Include today's ENTREGADO orders
+        java.time.LocalDateTime inicioDia = java.time.LocalDateTime.now().withHour(0).withMinute(0).withSecond(0).withNano(0);
+        List<OrdenProduccion> entregados = ordenRepository.findByEstado(EstadoProduccion.ENTREGADO).stream()
+                .filter(o -> o.getUpdatedAt() != null && o.getUpdatedAt().isAfter(inicioDia))
+                .collect(Collectors.toList());
+        ordenes.addAll(entregados);
+        
         return ordenes.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
