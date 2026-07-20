@@ -69,8 +69,7 @@ public class OrdenProduccionService {
                 log.info("Ventas notificado exitosamente");
             } catch (Exception e) {
                 log.error("Error al notificar a Ventas sobre el cambio de estado: {}", e.getMessage());
-                // No lanzamos excepción para no revertir la transacción de Cocina si Ventas falla, 
-                // o podríamos lanzarla dependiendo de las reglas de negocio. Por ahora solo logeamos.
+                throw new RuntimeException("Error de comunicación con Ventas: " + e.getMessage());
             }
         }
         
