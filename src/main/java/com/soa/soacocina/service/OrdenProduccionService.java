@@ -38,7 +38,7 @@ public class OrdenProduccionService {
         return convertToDTO(saved);
     }
     
-    @org.springframework.beans.factory.annotation.Value("${api.ventas.url:https://soa-orquestador.onrender.com/api/v1/pedidos}")
+    @org.springframework.beans.factory.annotation.Value("${ventas.service.endpoint.url:https://soa-orquestador.onrender.com/api/v1/pedidos}")
     private String ventasApiUrl;
 
     private final org.springframework.web.reactive.function.client.WebClient.Builder webClientBuilder;
